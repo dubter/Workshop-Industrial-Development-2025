@@ -72,22 +72,24 @@
 # Тестирование
 
 ## Проброс порта сервиса
-kubectl port-forward svc/app-service 8080:80
+`kubectl port-forward svc/app-service 8080:80 &`
 
 ## Тестирование API
+```
 curl http://localhost:8080/
 curl http://localhost:8080/status
 curl -X POST http://localhost:8080/log -d '{"message": "Test log"}'
 curl http://localhost:8080/logs
+```
 
 # Логи приложения
-kubectl logs deploy/app-deployment
+`kubectl logs deploy/app-deployment`
 
 # Логи агентов сбора логов
-kubectl logs -l name=log-agent
+`kubectl logs -l name=log-agent`
 
 # Результаты архивирования (после запуска CronJob)
-kubectl logs job/log-archiver-<timestamp>
+`kubectl logs job/log-archiver-<timestamp>`
 
 # Архитектура
 * Приложение сохраняет логи в /app/logs/app.log
