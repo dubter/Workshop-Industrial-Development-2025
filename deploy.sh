@@ -11,10 +11,10 @@ docker build -t $DOCKER_IMAGE .
 docker push mvpshe/logger-app:latest
 
 echo "2. Создание ConfigMap..."
-kubectl apply -f config.yaml
+kubectl apply -f k8s/config.yaml
 
 echo "3. Развертывание тестового Pod..."
-kubectl apply -f pod.yaml
+kubectl apply -f k8s/pod.yaml
 
 echo "4. Ожидание готовности Pod..."
 kubectl wait --for=condition=Ready pod/app-pod --timeout=60s
@@ -28,19 +28,19 @@ curl -X POST http://localhost:8080/log -d '{"message": "Test log"}'
 curl http://localhost:8080/logs
 
 echo "6. Развертывание Deployment с 3 репликами..."
-kubectl apply -f deployment.yaml
+kubectl apply -f k8s/deployment.yaml
 
 echo "7. Ожидание готовности Deployment..."
 kubectl rollout status deployment/app-deployment
 
 echo "8. Развертывание Service для балансировки нагрузки..."
-kubectl apply -f service.yaml
+kubectl apply -f k8s/service.yaml
 
 echo "9. Развертывание DaemonSet для сбора логов..."
-kubectl apply -f daemonset.yaml
+kubectl apply -f k8s/daemonset.yaml
 
 echo "10. Развертывание CronJob для архивирования логов..."
-kubectl apply -f cronjob.yaml
+kubectl apply -f k8s/cronjob.yaml
 
 echo "==== Система успешно развернута! ===="
 echo "Для тестирования выполните:"
