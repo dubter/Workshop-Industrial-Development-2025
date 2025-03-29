@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: log-archiver
+spec:
+  schedule: "*/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: archiver
+            image: alpine:3.15
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              apk add --no-cache curl tar
+              TIMESTAMP=$(date +%Y%m%d%H%M%S)
+              echo "Starting log archive job at $TIMESTAMP"
+              
+              mkdir -p /tmp/logs
+              
+              curl -s http://app-service/logs > /tmp/logs/app.log
+              
+              tar -czf /tmp/app-logs-$TIMESTAMP.tar.gz -C /tmp logs
+              echo "Log archive created: /tmp/app-logs-$TIMESTAMP.tar.gz"
+              
+              ls -la /tmp/app-logs-$TIMESTAMP.tar.gz
+              tar -tvf /tmp/app-logs-$TIMESTAMP.tar.gz
+            volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+          volumes:
+          - name: tmp-volume
+            emptyDir: {}
+          restartPolicy: OnFailure
