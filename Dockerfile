@@ -11,7 +11,6 @@ WORKDIR /app
 COPY --from=builder /app/app-logger /app/
 RUN mkdir -p /app/logs /app/config
 
-# Переменные окружения по умолчанию
 ENV APP_PORT=8080
 ENV WELCOME_MESSAGE="Welcome to the custom app"
 ENV LOG_LEVEL=INFO
