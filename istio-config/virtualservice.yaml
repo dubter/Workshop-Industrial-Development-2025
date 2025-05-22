@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: workshop-virtualservice
+  namespace: default
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - workshop-gateway
+  http:
+  - match:
+    - uri:
+        exact: /log
+      method: POST
+    fault:
+      fixedDelay: 2s
+      percentage:
+        value: 100.0
+    timeout: 1s
+    retries:
+      attempts: 2
+    route:
+    - destination:
+        host: app-service
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: app-service
+        port:
+          number: 80
